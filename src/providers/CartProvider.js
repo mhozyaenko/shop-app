@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, {useState, useCallback, useMemo} from "react";
 
 export const CartContext = React.createContext([]);
 
@@ -62,11 +62,12 @@ export default function CartProvider({ children }) {
   );
 
   /**
-   * count all items in the cart
+   * memo count all items in the cart
    * @type {function(): (*|number)}
    */
-  const countTotalItems = useCallback(
+  const memoTotalItems = useMemo(
     () => {
+      if (cart.length === 0) return 0;
       return cart.reduce( (acc, cur) => {
         return acc + cur.count;
       }, 0)
@@ -75,10 +76,10 @@ export default function CartProvider({ children }) {
   );
 
   /**
-   * count total sum of added to the cart items
+   * memo count total sum of items
    * @type {Function}
    */
-  const countTotalSum = useCallback(
+  const memoTotalSum = useMemo(
     () => {
       if (cart.length === 0) return 0;
       return cart.reduce( (acc, cur) => {
@@ -96,8 +97,8 @@ export default function CartProvider({ children }) {
         addOneItem,
         removeItems,
         removeOneItem,
-        countTotalItems,
-        countTotalSum
+        memoTotalItems,
+        memoTotalSum
       }}
     >
       {children}

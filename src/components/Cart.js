@@ -16,7 +16,7 @@ const ButtonGroup = Button.Group;
 export default function Cart() {
   const {
     cart,
-    countTotalSum,
+    memoTotalSum,
     addOneItem,
     removeOneItem,
     removeItems
@@ -60,7 +60,7 @@ export default function Cart() {
               </ButtonGroup>
             </Item>
           )}
-          footer={<strong>Total Sum: {countTotalSum()} UAH</strong>}>
+          footer={<strong>Total Sum: {memoTotalSum} UAH</strong>}>
     </List>
        :
     <Typography>
