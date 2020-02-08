@@ -1,7 +1,8 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {PageHeader, Button, Icon, Badge, Tooltip} from 'antd';
 import {Link} from "react-router-dom";
-import {CartContext} from "../providers/CartProvider";
+import {selectCartItemsCount, selectCartTotalSum} from "../store/selectors";
+import {connect} from "react-redux";
 
 /**
  * header component
@@ -10,21 +11,19 @@ import {CartContext} from "../providers/CartProvider";
  * @returns {*}
  * @constructor
  */
-export default function AppHeader({title, homePage}) {
-  const {memoTotalItems, memoTotalSum} = useContext(CartContext);
-
+function AppHeader({title, homePage, selectCartItemsCount, cartTotalSum}) {
   return (
    <PageHeader
      onBack={!homePage ? () => window.history.back() : null}
-     style = {{boxShadow: '0 2px 7px #444'}}
+     style = {{boxShadow: '0 2px 7px #444', zIndex: 100}}
      title={title}
      extra={
        <Link to="/cart">
          <Tooltip placement="left"
-                  title={`Total Sum: ${memoTotalSum} UAH`}>
+                  title={`Total Sum: ${cartTotalSum} UAH`}>
            <Button type="primary"
                    style={{padding: '13px 20px 13px 15px', height: 45}}>
-             <Badge count={memoTotalItems}
+             <Badge count={selectCartItemsCount}
                     showZero
                     overflowCount={10}
                     style={{background: '#f5222d', color: 'fff'}} >
@@ -38,3 +37,12 @@ export default function AppHeader({title, homePage}) {
    />
  )
 }
+
+const mapStateToProps = state => ({
+  selectCartItemsCount: selectCartItemsCount(state),
+  cartTotalSum: selectCartTotalSum(state)
+});
+
+const enhance = connect(mapStateToProps);
+
+export default enhance(AppHeader);

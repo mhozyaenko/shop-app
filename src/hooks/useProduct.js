@@ -1,24 +1,15 @@
-import { useState, useEffect } from "react";
+import {useSelector} from "react-redux";
+import {useMemo} from "react";
 
 /**
- * Get product details
- * @param productId
- * @returns {{product: any | ()}}
+ * get product by id
+ * @param id
+ * @returns {{product: *}}
  */
-export const useProduct = productId => {
-  const [product, setProduct] = useState(null);
+export default function useProduct(id) {
+  const product = useSelector(state => state.products.byIds[id]);
 
-  useEffect(() => {
-    fetch(
-      `${process.env.REACT_APP_API_URL}/products/${productId}`
-    )
-      .then(res => res.json())
-      .then(product => {
-        setProduct(product);
-      });
-  }, [productId]);
-
-  return {
+  return useMemo(() => ({
     product
-  };
-};
+  }), [product]);
+}

@@ -1,8 +1,8 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Card, Button} from 'antd'
 import moment from 'moment';
 import {Link} from "react-router-dom";
-import {CartContext} from "../providers/CartProvider";
+import useCheckProductInCart from "../hooks/useCheckProductInCart";
 
 const {Meta} = Card;
 
@@ -13,10 +13,10 @@ const {Meta} = Card;
  * @returns {*}
  * @constructor
  */
-export default function ProductItem({product, single}) {
+function ProductItem({product, single, click}) {
   const {id, name, price, origin} = product;
   const date = moment(product.date).format('DD.MM.YYYY');
-  const {addToCart} = useContext(CartContext);
+  const isInCart = useCheckProductInCart(id);
 
   return (
     <Card
@@ -35,7 +35,7 @@ export default function ProductItem({product, single}) {
       <Meta title={`origin: ${origin}`}
             description={`date: ${date}`}/>
       <Button
-        onClick={() => addToCart(id, name, price)}
+        onClick={() => click({id}, isInCart)}
         type="primary"
         style={{marginTop: 20}}>
         Add to cart
@@ -43,3 +43,5 @@ export default function ProductItem({product, single}) {
     </Card>
   )
 }
+
+export default ProductItem;
