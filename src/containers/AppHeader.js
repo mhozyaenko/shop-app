@@ -1,9 +1,8 @@
 import React from 'react';
 import {PageHeader, Button, Icon, Badge, Tooltip} from 'antd';
 import {Link} from "react-router-dom";
-import {selectCartItemsCount} from "../store/selectors";
+import {selectCartItemsCount, selectCartTotalSum} from "../store/selectors";
 import {connect} from "react-redux";
-import useCartTotal from "../hooks/useCartTotal";
 
 /**
  * header component
@@ -12,9 +11,7 @@ import useCartTotal from "../hooks/useCartTotal";
  * @returns {*}
  * @constructor
  */
-function AppHeader({title, homePage, selectCartItemsCount}) {
-  const cartTotalSum = useCartTotal();
-
+function AppHeader({title, homePage, selectCartItemsCount, cartTotalSum}) {
   return (
    <PageHeader
      onBack={!homePage ? () => window.history.back() : null}
@@ -43,6 +40,7 @@ function AppHeader({title, homePage, selectCartItemsCount}) {
 
 const mapStateToProps = state => ({
   selectCartItemsCount: selectCartItemsCount(state),
+  cartTotalSum: selectCartTotalSum(state)
 });
 
 const enhance = connect(mapStateToProps);

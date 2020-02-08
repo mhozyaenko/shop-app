@@ -3,7 +3,6 @@ import ProductItem from "../components/ProductItem";
 import {selectPaginationData, selectProductsIds, selectProductsObj} from "../store/selectors";
 import {connect} from "react-redux";
 import {addItemsToCart, incrementItemsCount} from "../store/cart/actions";
-import {bindActionCreators} from "redux";
 import {Pagination} from "antd";
 import {PER_PAGE_OPTIONS} from "../constants/filterOptions";
 import {setPage, setPageItems} from "../store/filters/action";
@@ -22,7 +21,6 @@ function ProductList({
                        setPage,
                        setPageItems
 }) {
-
   /**
    * handle add to cart click
    * @param id
@@ -37,7 +35,6 @@ function ProductList({
    * @param page
    */
   const handlePageChange = (page) => {
-    console.log(page);
     setPage({page})
   };
 
@@ -85,8 +82,6 @@ const actions = {
   setPageItems
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
-
-const enhance = connect(mapStateToProps, mapDispatchToProps);
+const enhance = connect(mapStateToProps, actions);
 
 export default enhance(ProductList);

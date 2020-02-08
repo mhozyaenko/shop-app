@@ -1,6 +1,5 @@
 import {useSelector} from "react-redux";
 import {useMemo} from "react";
-import {selectProductById} from "../store/selectors";
 
 /**
  * get product by id
@@ -8,12 +7,9 @@ import {selectProductById} from "../store/selectors";
  * @returns {{product: *}}
  */
 export default function useProduct(id) {
-  const product = useSelector(selectProductById(id));
+  const product = useSelector(state => state.products.byIds[id]);
 
-  return useMemo(
-    () => ({
-      product
-    }),
-    [product]
-  );
+  return useMemo(() => ({
+    product
+  }), [product]);
 }

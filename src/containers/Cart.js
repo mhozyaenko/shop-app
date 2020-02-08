@@ -6,16 +6,14 @@ import {
   selectCartDetails,
   selectCartEntities,
   selectCartIds,
-  selectCartItemsCount
-  } from "../store/selectors";
+  selectCartItemsCount, selectCartTotalSum
+} from "../store/selectors";
 import {connect} from "react-redux";
 import {
   decrementItemsCount,
   incrementItemsCount,
   removeItemsFromCart
 } from "../store/cart/actions";
-import {bindActionCreators} from "redux";
-import useCartTotal from "../hooks/useCartTotal";
 
 const {Title} = Typography;
 const {Item} = List;
@@ -31,11 +29,10 @@ function Cart({
                 cartIds,
                 products,
                 cartTotalItems,
+                cartTotalSum,
                 incrementItemsCount,
                 decrementItemsCount,
                 removeItemsFromCart}) {
-
-  const cartTotalSum = useCartTotal();
 
   return (
     cartTotalItems > 0 ?
@@ -99,7 +96,8 @@ const mapStateToProps = state => ({
   cartItems: selectCartEntities(state),
   cartIds: selectCartIds(state),
   products: selectCartDetails(state),
-  cartTotalItems: selectCartItemsCount(state)
+  cartTotalItems: selectCartItemsCount(state),
+  cartTotalSum: selectCartTotalSum(state)
 });
 
 const actions = {
@@ -108,8 +106,6 @@ const actions = {
   removeItemsFromCart
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
-
-const enhance = connect(mapStateToProps, mapDispatchToProps);
+const enhance = connect(mapStateToProps, actions);
 
 export default enhance(Cart);

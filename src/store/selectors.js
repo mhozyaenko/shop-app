@@ -94,6 +94,19 @@ export const selectCartItemsCount = createSelector(
 );
 
 /**
+ * count total sum of items in cart
+ */
+export const selectCartTotalSum = createSelector(
+  [selectCartArray, selectCartDetails],
+  (ids = [], products) => (
+    ids.reduce(
+      (acc, cur) => (
+        acc + cur.count * (products[cur.id] ? products[cur.id].price : 0)), 0
+    )
+  )
+);
+
+/**
  * get selected options of origin filter
  */
 export const selectOrigins = createSelector(

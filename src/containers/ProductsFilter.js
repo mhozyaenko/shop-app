@@ -4,7 +4,7 @@ import {MAXPRICE, MINPRICE, ORIGINS} from "../constants/filterOptions";
 import {getCheckboxOptions} from "../helpers";
 import {bindActionCreators} from "redux";
 import connect from "react-redux/es/connect/connect";
-import {resetOrigins, resetPrices, setOrigins, setPrices} from "../store/filters/action";
+import {resetOrigins, setOrigins, setPage, setPrices} from "../store/filters/action";
 import {selectOrigins, selectPrices} from "../store/selectors";
 
 function ProductsFilter({
@@ -12,8 +12,8 @@ function ProductsFilter({
                           resetOrigins,
                           origins,
                           setPrices,
-                          resetPrices,
-                          prices
+                          prices,
+                          setPage
 }) {
   /**
    * handle changes of origins filter
@@ -21,6 +21,7 @@ function ProductsFilter({
    */
   const handleOriginsChange = (checkedValues) => {
     setOrigins({checkedValues});
+    setPage({page: 1});
   };
   /**
    * handle change of prices range
@@ -28,6 +29,7 @@ function ProductsFilter({
    */
   const handlePriceChange = (value) => {
     setPrices({value});
+    setPage({page: 1});
   };
 
   return (
@@ -67,7 +69,7 @@ const actions = {
   setOrigins,
   resetOrigins,
   setPrices,
-  resetPrices
+  setPage
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);

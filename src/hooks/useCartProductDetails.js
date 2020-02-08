@@ -20,7 +20,6 @@ export default function useCartProductDetails() {
         }
       });
     }
-    console.log(payload);
     dispatch(saveProductDetails({payload}));
 
   }, [cartIds]);
