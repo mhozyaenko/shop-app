@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useMemo} from "react";
 import {getProducts} from "../api/products";
 import {getProductsSuccess} from "../store/products/actions";
-import {selectFilters, selectProductsObj} from "../store/selectors";
+import {selectFilters, selectFiltersEditable, selectProductsObj} from "../store/selectors";
 import {filtersToString, normalize} from "../helpers";
 import {setPagination} from "../store/filters/action";
 
@@ -15,15 +15,15 @@ export default function useProductsList() {
   const products = useSelector(selectProductsObj);
   const filters = useSelector(selectFilters);
   const queryString = filtersToString(filters);
+  const withAuth = useSelector(selectFiltersEditable);
 
   useEffect(() => {
-      getProducts(queryString)
+      getProducts(queryString, withAuth)
         .then(data => {
           dispatch(getProductsSuccess(normalize(data.items)));
           dispatch(setPagination({data}))
         })
-
-  }, [dispatch, queryString]);
+  }, [dispatch, queryString, withAuth]);
 
   return useMemo(
     () => ({

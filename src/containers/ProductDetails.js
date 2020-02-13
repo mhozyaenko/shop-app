@@ -3,15 +3,10 @@ import {useParams} from "react-router-dom";
 import {Spin} from "antd";
 import ProductItem from "../components/ProductItem";
 import connect from "react-redux/es/connect/connect";
-import useProduct from "../hooks/useProduct";
+import {useProduct} from "../hooks/useProduct";
 import {addItemsToCart, incrementItemsCount} from "../store/cart/actions";
 import {bindActionCreators} from "redux";
 
-/**
- * Product details component
- * @returns {*}
- * @constructor
- */
 function ProductDetails({incrementItemsCount, addItemsToCart}) {
   const {productId} = useParams();
   const {product} = useProduct(productId);

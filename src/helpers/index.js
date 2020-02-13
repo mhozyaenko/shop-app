@@ -26,7 +26,7 @@ export const normalize = (array) => {
 export const getCheckboxOptions = (options) => {
   const result = [];
 
-  options.map(item => result.push({label: item, value: item}));
+  options.map(item => result.push({label: item.displayName, value: item.value}));
 
   return result;
 };
@@ -42,7 +42,8 @@ export const filtersToString = (filters) => {
     filters.minPrice === MINPRICE ? '' : `minPrice=${filters.minPrice}`,
     filters.maxPrice === MAXPRICE ? '' : `maxPrice=${filters.maxPrice}`,
     filters.page && filters.page !== DEFAULT_PAGE ? `page=${filters.page}` : '',
-    filters.perPage && filters.perPage !== DEFAULT_PERPAGE ? `perPage=${filters.perPage}` : ''
+    filters.perPage && filters.perPage !== DEFAULT_PERPAGE ? `perPage=${filters.perPage}` : '',
+    filters.editable ? 'editable=true' : ''
   ];
 
   return array.filter(Boolean).length === 0 ?

@@ -1,48 +1,121 @@
-import React from 'react';
-import {PageHeader, Button, Icon, Badge, Tooltip} from 'antd';
+import React, {Fragment, useState} from 'react';
+import {PageHeader, Button, Icon, Badge, Tooltip, Modal, Menu} from 'antd';
 import {Link} from "react-router-dom";
-import {selectCartItemsCount, selectCartTotalSum} from "../store/selectors";
+import {
+  selectCartItemsCount,
+  selectCartTotalSum,
+  selectProductOrigins
+} from "../store/selectors";
 import {connect} from "react-redux";
+import AddProductForm from "../components/ProductForm";
+import {postNewProduct} from "../api/products";
+import {getFormValues, isSubmitting, reset, startSubmit, stopSubmit} from "redux-form";
+import {openNotificationWithIcon} from "../services/notifications";
 
-/**
- * header component
- * @param title - header title string
- * @param homePage - true: home page title
- * @returns {*}
- * @constructor
- */
-function AppHeader({title, homePage, selectCartItemsCount, cartTotalSum}) {
+function AppHeader({
+                     title,
+                     homePage,
+                     selectCartItemsCount,
+                     cartTotalSum,
+                     origins,
+                     productFormData,
+                     reset,
+                     startSubmit,
+                     isSubmitting,
+                     stopSubmit,
+}) {
+  const [modalOpened, setModalOpened] = useState(false);
+
+  const openModal = () => {
+    setModalOpened(true);
+  };
+
+  const onModalCancel = () => {
+    setModalOpened(false);
+    reset('product');
+  };
+
+  const addProduct = (data) => {
+    startSubmit('product');
+    postNewProduct(data)
+      .then(response => {
+        stopSubmit('product');
+        if(response) {
+          openNotificationWithIcon('success', 'Congrats!', 'Your product is succesfully added to our store');
+          setModalOpened(false);
+          reset('product');
+        } else {
+          openNotificationWithIcon('error', 'OOPS!', 'Something went wrong... Please try again')
+        }
+      })
+  };
+
   return (
-   <PageHeader
-     onBack={!homePage ? () => window.history.back() : null}
-     style = {{boxShadow: '0 2px 7px #444', zIndex: 100}}
-     title={title}
-     extra={
-       <Link to="/cart">
-         <Tooltip placement="left"
-                  title={`Total Sum: ${cartTotalSum} UAH`}>
-           <Button type="primary"
-                   style={{padding: '13px 20px 13px 15px', height: 45}}>
-             <Badge count={selectCartItemsCount}
-                    showZero
-                    overflowCount={10}
-                    style={{background: '#f5222d', color: 'fff'}} >
-               <Icon style={{fontSize: '24px'}}
-                     type="shopping-cart" />
-             </Badge>
-           </Button>
-         </Tooltip>
-       </Link>
-     }
-   />
+    <Fragment>
+      <PageHeader
+        onBack={!homePage ? () => window.history.back() : null}
+        style = {{boxShadow: '0 2px 7px #444', zIndex: 100}}
+        title={title}
+        extra={
+          <Fragment>
+            <Menu mode="horizontal">
+              <Menu.Item>
+                <Link to="/">All Products</Link>
+              </Menu.Item>
+              <Menu.Item>
+                <Link to="/my-products">My products</Link>
+              </Menu.Item>
+              <Menu.Item>
+                <Link to="/orders">My Orders</Link>
+              </Menu.Item>
+            </Menu>
+            <Button type="primary"
+                    onClick={openModal}
+                    className="header-button">Add My Product</Button>
+            <Link to="/cart">
+              <Tooltip placement="left"
+                       title={`Total Sum: ${cartTotalSum} UAH`}>
+                <Button type="primary"
+                        className="header-button">
+                  <Badge count={selectCartItemsCount}
+                         showZero
+                         overflowCount={10}
+                         style={{background: '#f5222d', color: 'fff'}} >
+                    <Icon style={{fontSize: '24px'}}
+                          type="shopping-cart" />
+                  </Badge>
+                </Button>
+              </Tooltip>
+            </Link>
+          </Fragment>
+        }
+      />
+      <Modal visible={modalOpened}
+             title="Add new product"
+             onOk={() => addProduct(productFormData)}
+             confirmLoading={isSubmitting}
+             cancelButtonProps={{disabled: isSubmitting}}
+             onCancel={onModalCancel}>
+        <AddProductForm origins={origins} disabled={isSubmitting}/>
+      </Modal>
+    </Fragment>
  )
 }
 
 const mapStateToProps = state => ({
   selectCartItemsCount: selectCartItemsCount(state),
-  cartTotalSum: selectCartTotalSum(state)
+  cartTotalSum: selectCartTotalSum(state),
+  origins: selectProductOrigins(state),
+  productFormData: getFormValues('product')(state),
+  isSubmitting: isSubmitting('product')(state),
 });
 
-const enhance = connect(mapStateToProps);
+const actions = {
+  reset,
+  startSubmit,
+  stopSubmit,
+};
+
+const enhance = connect(mapStateToProps, actions);
 
 export default enhance(AppHeader);

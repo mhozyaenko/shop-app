@@ -6,7 +6,8 @@ const initialState = {
   maxPrice: MAXPRICE,
   page: null,
   perPage: null,
-  totalItems: null
+  totalItems: null,
+  editable: false,
 };
 
 export default function filtersReducer(state = initialState, action) {
@@ -50,6 +51,16 @@ export default function filtersReducer(state = initialState, action) {
         ...state,
         page: action.current,
         perPage: action.size
+      };
+    case 'SET_EDITABLE':
+      return {
+        ...state,
+        editable: true,
+      };
+    case 'SET_NOT_EDITABLE':
+      return {
+        ...state,
+        editable: false,
       };
     default:
       return state;

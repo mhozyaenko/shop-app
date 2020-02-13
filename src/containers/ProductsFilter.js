@@ -1,11 +1,11 @@
 import React, {Fragment} from 'react';
 import {Button, Checkbox, Slider} from 'antd';
-import {MAXPRICE, MINPRICE, ORIGINS} from "../constants/filterOptions";
+import {MAXPRICE, MINPRICE} from "../constants/filterOptions";
 import {getCheckboxOptions} from "../helpers";
 import {bindActionCreators} from "redux";
 import connect from "react-redux/es/connect/connect";
 import {resetOrigins, setOrigins, setPage, setPrices} from "../store/filters/action";
-import {selectOrigins, selectPrices} from "../store/selectors";
+import {selectOrigins, selectPrices, selectProductOrigins} from "../store/selectors";
 
 function ProductsFilter({
                           setOrigins,
@@ -13,7 +13,8 @@ function ProductsFilter({
                           origins,
                           setPrices,
                           prices,
-                          setPage
+                          setPage,
+                          productOrigins
 }) {
   /**
    * handle changes of origins filter
@@ -40,7 +41,7 @@ function ProductsFilter({
           className="checkbox-group"
           onChange={handleOriginsChange}
           value={origins}
-          options={getCheckboxOptions(ORIGINS)}>
+          options={getCheckboxOptions(productOrigins)}>
         </Checkbox.Group>
         <Button onClick={resetOrigins}>All origins</Button>
       </div>
@@ -62,7 +63,8 @@ function ProductsFilter({
 
 const mapStateToProps = state => ({
   origins: selectOrigins(state),
-  prices: selectPrices(state)
+  prices: selectPrices(state),
+  productOrigins: selectProductOrigins(state)
 });
 
 const actions = {

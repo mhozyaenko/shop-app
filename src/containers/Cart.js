@@ -10,10 +10,14 @@ import {
 } from "../store/selectors";
 import {connect} from "react-redux";
 import {
+  clearCart,
   decrementItemsCount,
   incrementItemsCount,
   removeItemsFromCart
 } from "../store/cart/actions";
+import {postOrder} from "../api/order";
+import {openNotificationWithIcon} from "../services/notifications";
+import {useHistory} from "react-router";
 
 const {Title} = Typography;
 const {Item} = List;
@@ -32,7 +36,23 @@ function Cart({
                 cartTotalSum,
                 incrementItemsCount,
                 decrementItemsCount,
-                removeItemsFromCart}) {
+                removeItemsFromCart,
+                clearCart}) {
+  const history = useHistory();
+
+  const confirmOrder = () => {
+    const data = {order: {pieces: cartIds.map(item => ({productId: item, count: cartItems[item].count}))}};
+    postOrder(data)
+      .then(response => {
+        if(response.id) {
+          openNotificationWithIcon("success", "Thank you!", "Order is confirmed");
+          clearCart();
+          history.push(`/orders/${response.id}`);
+        } else {
+          openNotificationWithIcon("error", "OOPS!...", "Something went wrong");
+        }
+      });
+  };
 
   return (
     cartTotalItems > 0 ?
@@ -41,8 +61,17 @@ function Cart({
                     <Link to='/'>continue shopping</Link>
                   </Typography>}
           style={{padding: 20}}
-
-          footer={<strong>Total Sum: {cartTotalSum} UAH</strong>}>
+          footer={
+            <div>
+              <strong>
+                Total Sum: {cartTotalSum} UAH
+              </strong>
+              <Button type="primary"
+                      style={{marginLeft: 50}}
+                      onClick={confirmOrder}>
+                Confirm Order
+              </Button>
+            </div>}>
       {cartIds.map(id => (
       <Item key={id}>
         <Item.Meta
@@ -103,7 +132,8 @@ const mapStateToProps = state => ({
 const actions = {
   incrementItemsCount,
   decrementItemsCount,
-  removeItemsFromCart
+  removeItemsFromCart,
+  clearCart
 };
 
 const enhance = connect(mapStateToProps, actions);

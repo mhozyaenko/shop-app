@@ -22,6 +22,14 @@ export const selectCart = state => state.cart;
 export const selectFilters = state => state.filters;
 
 /**
+ * is editable parameter
+ */
+export const selectFiltersEditable = createSelector(
+  selectFilters,
+  state => state.editable
+);
+
+/**
  *  get products object
  */
 export const selectProductsObj = createSelector(
@@ -38,11 +46,11 @@ export const selectProductsIds = createSelector(
 );
 
 /**
- * get product by id
+ * get origins
  */
-export const selectProductById = id => createSelector(
-  selectProductsObj,
-  state => state[id]
+export const selectProductOrigins = createSelector(
+  selectProducts,
+  state => state.origins
 );
 
 /**
@@ -129,5 +137,3 @@ export const selectPaginationData = createSelector(
   selectFilters,
   state => ({page: state.page, perPage: state.perPage, totalItems: state.totalItems})
 );
-
-

@@ -1,6 +1,7 @@
 const initialState = {
   byIds: {},
   idArray: [],
+  origins: [],
 };
 
 export default function ProductsReducer(state = initialState, action) {
@@ -11,7 +12,17 @@ export default function ProductsReducer(state = initialState, action) {
           byIds: {...action.dataObject},
           idArray: [...action.keys],
       };
-
+    case 'GET_ORIGINS_SUCCESS':
+      return {
+        ...state,
+        origins: [...action.items]
+      };
+    case 'SET_CHANGED_PRODUCT':
+      return {
+        ...state,
+        byIds: {...state.byIds,
+          [action.data.id]: action.data}
+      };
     default:
       return state;
   }
