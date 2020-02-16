@@ -1,18 +1,21 @@
+import {createRequest} from "./base";
+
+const withAuth = true;
 /**
  * Post an order
  * @param data
  * @returns {Promise<Response | never>}
  */
 export const postOrder = data => {
-  return fetch(`${process.env.REACT_APP_API_URL}/orders`,{
-    method: 'POST',
-    headers: {
-      'Authorization': process.env.REACT_APP_API_KEY,
-      'Content-type': 'application/json'
-    },
-    body: JSON.stringify((data))
+  return createRequest({
+    config: () => ({
+      url: '/orders',
+      method: 'POST',
+      data: JSON.stringify((data))
+    }),
+    withAuth
   })
-    .then(response => response.json())
+    .then(response => response.data)
 };
 
 /**
@@ -20,12 +23,14 @@ export const postOrder = data => {
  * @returns {Promise<Response | never>}
  */
 export const getOrdersList = () => {
-  return fetch(`${process.env.REACT_APP_API_URL}/orders`, {
-    headers: {
-      'Authorization': process.env.REACT_APP_API_KEY
-    }
+  return createRequest({
+    config: () => ({
+      url: '/orders',
+      method: 'GET'
+    }),
+    withAuth
   })
-    .then(response => response.json())
+    .then(response => response.data)
 };
 
 /**
@@ -34,10 +39,12 @@ export const getOrdersList = () => {
  * @returns {Promise<Response | never>}
  */
 export const getOrder = id => {
-  return fetch(`${process.env.REACT_APP_API_URL}/orders/${id}`, {
-    headers: {
-      'Authorization': process.env.REACT_APP_API_KEY
-    }
+  return createRequest({
+    config: () => ({
+      url: `/orders/${id}`,
+      method: 'GET'
+    }),
+    withAuth
   })
-    .then(response => response.json())
+    .then(response => response.data)
 };

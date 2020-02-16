@@ -9,7 +9,7 @@ import {
 import {connect} from "react-redux";
 import AddProductForm from "../components/ProductForm";
 import {postNewProduct} from "../api/products";
-import {getFormValues, isSubmitting, reset, startSubmit, stopSubmit} from "redux-form";
+import {getFormValues, isSubmitting, isValid, reset, submit} from "redux-form";
 import {openNotificationWithIcon} from "../services/notifications";
 
 function AppHeader({
@@ -22,7 +22,9 @@ function AppHeader({
                      reset,
                      startSubmit,
                      isSubmitting,
-                     stopSubmit,
+                     isValid,
+                     submit,
+
 }) {
   const [modalOpened, setModalOpened] = useState(false);
 
@@ -32,18 +34,15 @@ function AppHeader({
 
   const onModalCancel = () => {
     setModalOpened(false);
-    reset('product');
+    reset('addProduct');
   };
 
-  const addProduct = (data) => {
-    startSubmit('product');
+  const onFormSubmit = (data) => {
     postNewProduct(data)
       .then(response => {
-        stopSubmit('product');
         if(response) {
           openNotificationWithIcon('success', 'Congrats!', 'Your product is succesfully added to our store');
           setModalOpened(false);
-          reset('product');
         } else {
           openNotificationWithIcon('error', 'OOPS!', 'Something went wrong... Please try again')
         }
@@ -92,11 +91,15 @@ function AppHeader({
       />
       <Modal visible={modalOpened}
              title="Add new product"
-             onOk={() => addProduct(productFormData)}
+             onOk={() => submit('addProduct')}
+             okButtonProps={{disabled: !isValid}}
              confirmLoading={isSubmitting}
              cancelButtonProps={{disabled: isSubmitting}}
              onCancel={onModalCancel}>
-        <AddProductForm origins={origins} disabled={isSubmitting}/>
+        <AddProductForm origins={origins}
+                        disabled={isSubmitting}
+                        name='addProduct'
+                        onSubmit={productFormData => onFormSubmit(productFormData)}/>
       </Modal>
     </Fragment>
  )
@@ -106,14 +109,15 @@ const mapStateToProps = state => ({
   selectCartItemsCount: selectCartItemsCount(state),
   cartTotalSum: selectCartTotalSum(state),
   origins: selectProductOrigins(state),
-  productFormData: getFormValues('product')(state),
-  isSubmitting: isSubmitting('product')(state),
+  productFormData: getFormValues('addProduct')(state),
+  isSubmitting: isSubmitting('addProduct')(state),
+  isValid: isValid('addProduct')(state)
+
 });
 
 const actions = {
   reset,
-  startSubmit,
-  stopSubmit,
+  submit,
 };
 
 const enhance = connect(mapStateToProps, actions);

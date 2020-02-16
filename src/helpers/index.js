@@ -48,6 +48,6 @@ export const filtersToString = (filters) => {
 
   return array.filter(Boolean).length === 0 ?
     '' :
-    `?${array.filter(Boolean).join('&')}`
+    `${array.filter(Boolean).join('&')}`
 };
 

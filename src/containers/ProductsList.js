@@ -7,7 +7,7 @@ import {Button, Modal, Pagination} from "antd";
 import {PER_PAGE_OPTIONS} from "../constants/filterOptions";
 import {setPage, setPageItems} from "../store/filters/action";
 import AddProductForm from "../components/ProductForm";
-import {getFormInitialValues, getFormValues, initialize, isSubmitting, stopSubmit, startSubmit, reset} from 'redux-form';
+import {getFormInitialValues, getFormValues, initialize, isSubmitting, reset, submit} from 'redux-form';
 import {postUpdateProduct} from "../api/products";
 import {setChangedProduct} from "../store/products/actions";
 import {openNotificationWithIcon} from "../services/notifications";
@@ -24,12 +24,11 @@ function ProductList({
                        origins,
                        initialize,
                        initialValues,
-                       startSubmit,
-                       stopSubmit,
                        reset,
                        productData,
                        isSubmitting,
-                       setChangedProduct
+                       setChangedProduct,
+                       submit
 }) {
   const [modalOpened, setModalOpened] = useState(false);
 
@@ -39,22 +38,20 @@ function ProductList({
 
   const handleEditClick = id => {
     setModalOpened(true);
-    initialize('product', products[id])
+    initialize('updateProduct', products[id])
   };
 
   const onModalCancel = () => {
     setModalOpened(false);
   };
 
-  const onModalSubmit = (data) => {
-    startSubmit('product');
+  const onFormSubmit = (data) => {
+
     postUpdateProduct(data)
       .then(response => {
-        stopSubmit('product');
         if(response) {
           openNotificationWithIcon('success', 'Congrats!', 'Your product is succesfully updated');
           setModalOpened(false);
-          reset('product');
           setChangedProduct({data});
         } else {
           openNotificationWithIcon('error', 'OOPS!', 'Something went wrong... Please try again')
@@ -94,16 +91,20 @@ function ProductList({
                              onCancel={onModalCancel}
                              title="Edit product"
                              footer={[
-                               <Button type="primary" onClick={() => onModalSubmit(productData)}>
+                               <Button type="primary" onClick={() => submit('updateProduct')}>
                                Submit
                                </Button>,
                                <Button onClick={onModalCancel} type="danger">
                                  Cancel
                                </Button>,
-                               <Button onClick={() => initialize('product', initialValues)}>
+                               <Button onClick={() => initialize('updateProduct', initialValues)}>
                                  Reset
                                </Button>]}>
-        <AddProductForm origins={origins} disabled={isSubmitting}/>
+        <AddProductForm
+          origins={origins}
+          disabled={isSubmitting}
+          name="updateProduct"
+          onSubmit={productFormData => onFormSubmit(productFormData)}/>
       </Modal>}
     </Fragment>
   )
@@ -114,9 +115,9 @@ const mapStateToProps = state => ({
   products: selectProductsObj(state),
   pagination: selectPaginationData(state),
   origins: selectProductOrigins(state),
-  initialValues: getFormInitialValues('product')(state),
-  productData: getFormValues('product')(state),
-  isSubmitting: isSubmitting('product')(state)
+  initialValues: getFormInitialValues('updateProduct')(state),
+  productData: getFormValues('updateProduct')(state),
+  isSubmitting: isSubmitting('updateProduct')(state)
 });
 
 const actions = {
@@ -125,10 +126,9 @@ const actions = {
   setPage,
   setPageItems,
   initialize,
-  startSubmit,
-  stopSubmit,
   reset,
-  setChangedProduct
+  setChangedProduct,
+  submit
 };
 
 const enhance = connect(mapStateToProps, actions);

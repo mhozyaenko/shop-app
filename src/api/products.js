@@ -1,17 +1,19 @@
 import {RESPONSE_STATUSES} from "../constants/httpResponses";
+import {createRequest} from "./base";
 
 /**
  * fetch products list
  * @returns {Promise<{dataObject, keys} | never>}
  */
 export const getProducts = (queryString, withAuth) => {
-  const headers = withAuth ? {'Authorization': process.env.REACT_APP_API_KEY} : {};
-  return fetch(
-    `${process.env.REACT_APP_API_URL}/products${queryString}`, {
-      headers: headers
-    }
-  )
-    .then(res => res.json())
+  return createRequest({
+    config: () => ({
+      method: 'GET',
+      url: `/products?${queryString}`,
+    }),
+    withAuth
+  })
+    .then(res => res.data)
 };
 
 /**
@@ -20,16 +22,26 @@ export const getProducts = (queryString, withAuth) => {
  * @returns {Promise<Response | never>}
  */
 export const getProduct = id => {
-  return fetch(`${process.env.REACT_APP_API_URL}/products/${id}`)
-    .then(res => res.json())
+  return createRequest({
+    config: () => ({
+      method: 'GET',
+      url: `/products/${id}`
+    })
+  })
+    .then(res => res.data)
 };
 
 /**
  * fetch products origins
  */
 export const getOrigins = () => {
-  return fetch(`${process.env.REACT_APP_API_URL}/products-origins`)
-    .then(res => res.json())
+  return createRequest({
+    config: () => ({
+      method: 'GET',
+      url: '/products-origins/'
+    })
+  })
+    .then(res => res.data)
 };
 
 /**
@@ -38,15 +50,16 @@ export const getOrigins = () => {
  * @returns {Promise<boolean | never>}
  */
 export const postNewProduct = data => {
-  return fetch(`${process.env.REACT_APP_API_URL}/products`, {
-    method: 'POST',
-    headers : {
-      'Authorization': process.env.REACT_APP_API_KEY,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({product: data})
+  const withAuth = true;
+  return createRequest({
+    config: () => ({
+      url: '/products',
+      method: 'POST',
+      data: JSON.stringify({product: data})
+    }),
+    withAuth
   })
-    .then(response => response.status === RESPONSE_STATUSES.OK);
+    .then(response => response.status === RESPONSE_STATUSES.OK)
 };
 
 /**
@@ -55,13 +68,14 @@ export const postNewProduct = data => {
  * @returns {Promise<boolean | never>}
  */
 export const postUpdateProduct = data => {
-  return fetch(`${process.env.REACT_APP_API_URL}/products/${data.id}`,{
-    method: 'PATCH',
-    headers: {
-      'Authorization': process.env.REACT_APP_API_KEY,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({product: {name: data.name, price: data.price, origin: data.origin}})
+  const withAuth = true;
+  return createRequest({
+    config: () => ({
+      url: `/products/${data.id}`,
+      method: 'PATCH',
+      data: JSON.stringify({product: {name: data.name, price: data.price, origin: data.origin}})
+    }),
+    withAuth
   })
-    .then(response => response.status === RESPONSE_STATUSES.OK);
+    .then(response => response.status === RESPONSE_STATUSES.OK)
 };
