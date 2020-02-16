@@ -1,15 +1,4 @@
 /**
- * origins of products
- * @type {string[]}
- */
-export const ORIGINS = [
-  'europe',
-  'usa',
-  'africa',
-  'asia'
-];
-
-/**
  * minimum and maximum price
  * @type {number}
  */

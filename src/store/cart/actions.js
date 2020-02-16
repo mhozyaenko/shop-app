@@ -1,5 +1,5 @@
 import {
-  ADD_ITEM_TO_CART,
+  ADD_ITEM_TO_CART, CLEAR_CART,
   DECREMENT_ITEMS_COUNT,
   INCREMENT_ITEMS_COUNT,
   REMOVE_ITEMS_FROM_CART,
@@ -29,4 +29,8 @@ export const removeItemsFromCart = data => ({
 export const saveProductDetails = data => ({
   type: SAVE_PRODUCT_DETAILS,
   ...data
+});
+
+export const clearCart = () => ({
+  type: CLEAR_CART
 });
