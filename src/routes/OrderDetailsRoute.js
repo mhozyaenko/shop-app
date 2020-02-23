@@ -1,30 +1,30 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment} from 'react';
 import AppHeader from "../containers/AppHeader";
 import {Layout} from "antd";
-import {useParams} from "react-router";
-import {getOrder} from "../api/order";
+import {useParams, withRouter} from "react-router";
 import OrderItem from "../components/OrderItem";
+import {useSelector} from "react-redux";
+import {selectOrderById} from "../store/orders/selectors";
+import {useInjectSaga} from "../containers/AppWrapper";
+import fetchOrderSaga from "../store/sagas/fetchOrderSaga";
 
 const {Content} = Layout;
 
 function OrderDetailsRoute() {
   const {orderId} = useParams();
-  const [order, setOrder] = useState(null);
-  useEffect( () => {
-    getOrder(orderId)
-      .then(response => (setOrder(response)));
-  }, [orderId]);
+  const order = useSelector(selectOrderById(orderId));
+  useInjectSaga('fetchOrder', fetchOrderSaga, orderId);
+
   return (
     <Fragment>
       <AppHeader title="Order Details" homePage />
       <Layout>
         <Content>
-          <OrderItem order={order} />
+          {order && <OrderItem order={order} />}
         </Content>
       </Layout>
-
     </Fragment>
   )
 }
 
-export default OrderDetailsRoute;
+export default withRouter(OrderDetailsRoute);

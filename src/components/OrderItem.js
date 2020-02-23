@@ -1,19 +1,14 @@
 import React from 'react';
 import {Card} from "antd";
+import {orderShape} from "../shapes/orderShape";
 
 const {Meta} = Card;
 
-/**
- * order details component
- * @param order
- * @returns {*}
- * @constructor
- */
 function OrderItem({order}) {
   return (
     order && <div>
       {order.pieces.map(item => (
-          <Card
+          <Card key={item.id}
             title={`${item.product.name} - ${item.count} `}
             size="default">
             <Meta description={`price: ${item.product.price} UAH`}
@@ -25,5 +20,9 @@ function OrderItem({order}) {
     </div>
   )
 }
+
+OrderItem.propTypes = {
+  order: orderShape.isRequired
+};
 
 export default OrderItem;

@@ -1,22 +1,15 @@
-import React, {Fragment, useEffect} from "react";
+import React, {Fragment} from "react";
 import AppHeader from "../containers/AppHeader";
 import ProductsList from "../containers/ProductsList";
 import {Layout} from "antd";
 import ProductsFilter from "../containers/ProductsFilter";
-import connect from "react-redux/es/connect/connect";
-import {selectFiltersEditable} from "../store/selectors";
-import {setNotEditable} from "../store/filters/action";
+import {withRouter} from "react-router";
 
 const {Sider, Content} = Layout;
 
-function ProductsListRoute({isEditable, setNotEditable}) {
-useEffect( () => {
-  if (isEditable) setNotEditable()
-}, [isEditable]);
-
-  return(
+const ProductsListRoute = () => (
     <Fragment>
-      <AppHeader title="Products List" homePage />
+      <AppHeader title="Products List" />
       <Layout>
         <Sider width={250} theme="light">
           <ProductsFilter />
@@ -26,17 +19,6 @@ useEffect( () => {
         </Content>
       </Layout>
     </Fragment>
-  )
-}
+);
 
-const mapStateToProps = state => ({
-  isEditable: selectFiltersEditable(state)
-});
-
-const actions = {
-  setNotEditable
-};
-
-const enhance = connect(mapStateToProps, actions);
-
-export default enhance(ProductsListRoute)
+export default withRouter(ProductsListRoute);

@@ -1,6 +1,7 @@
 import React, {Fragment} from "react";
 import AppHeader from "../containers/AppHeader";
 import ProductDetails from "../containers/ProductDetails";
+import {withRouter} from "react-router";
 
 function ProductRoute() {
 
@@ -12,4 +13,4 @@ function ProductRoute() {
   )
 }
 
-export default ProductRoute;
+export default withRouter(ProductRoute);

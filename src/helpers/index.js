@@ -1,4 +1,5 @@
 import {DEFAULT_PAGE, DEFAULT_PERPAGE, MAXPRICE, MINPRICE} from "../constants/filterOptions";
+import {parse} from "qs";
 
 /**
  * normalize data from api
@@ -49,5 +50,21 @@ export const filtersToString = (filters) => {
   return array.filter(Boolean).length === 0 ?
     '' :
     `${array.filter(Boolean).join('&')}`
+};
+
+/**
+ * from query string to filters object
+ * @param string
+ * @returns {*}
+ */
+export const parseQueryString = string => {
+  const parsedObj = parse(string.substr(1));
+
+  if (parsedObj.origins) {
+    parsedObj.origin = parsedObj.origins.split(',')
+    delete parsedObj.origins;
+  }
+
+  return parsedObj
 };
 

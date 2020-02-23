@@ -1,65 +1,48 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment} from 'react';
+import PropTypes from 'prop-types';
 import {PageHeader, Button, Icon, Badge, Tooltip, Modal, Menu} from 'antd';
 import {Link} from "react-router-dom";
 import {
   selectCartItemsCount,
-  selectCartTotalSum,
-  selectProductOrigins
-} from "../store/selectors";
-import {connect} from "react-redux";
-import AddProductForm from "../components/ProductForm";
-import {postNewProduct} from "../api/products";
+  selectCartTotalSum
+} from "../store/cart/selectors";
+import {connect, useSelector} from "react-redux";
+import ProductForm from "../components/ProductForm";
 import {getFormValues, isSubmitting, isValid, reset, submit} from "redux-form";
-import {openNotificationWithIcon} from "../services/notifications";
+import {toggleModal} from "../store/app/actions";
+import {selectModalStatus} from "../store/app/selectors";
+import {selectProductOrigins} from "../store/products/selectors";
 
-function AppHeader({
-                     title,
-                     homePage,
+const FORM_NAME = 'addProduct';
+
+function AppHeader({ title,
                      selectCartItemsCount,
                      cartTotalSum,
                      origins,
                      productFormData,
                      reset,
-                     startSubmit,
                      isSubmitting,
                      isValid,
                      submit,
-
+                     toggleModal
 }) {
-  const [modalOpened, setModalOpened] = useState(false);
-
-  const openModal = () => {
-    setModalOpened(true);
-  };
+  const modalOpened = useSelector(selectModalStatus(FORM_NAME));
 
   const onModalCancel = () => {
-    setModalOpened(false);
-    reset('addProduct');
-  };
-
-  const onFormSubmit = (data) => {
-    postNewProduct(data)
-      .then(response => {
-        if(response) {
-          openNotificationWithIcon('success', 'Congrats!', 'Your product is succesfully added to our store');
-          setModalOpened(false);
-        } else {
-          openNotificationWithIcon('error', 'OOPS!', 'Something went wrong... Please try again')
-        }
-      })
+    toggleModal({name: FORM_NAME, status: false});
+    reset(FORM_NAME);
   };
 
   return (
     <Fragment>
       <PageHeader
-        onBack={!homePage ? () => window.history.back() : null}
         style = {{boxShadow: '0 2px 7px #444', zIndex: 100}}
         title={title}
         extra={
           <Fragment>
             <Menu mode="horizontal">
               <Menu.Item>
-                <Link to="/">All Products</Link>
+                <Link to="/products">All Products</Link>
               </Menu.Item>
               <Menu.Item>
                 <Link to="/my-products">My products</Link>
@@ -69,7 +52,7 @@ function AppHeader({
               </Menu.Item>
             </Menu>
             <Button type="primary"
-                    onClick={openModal}
+                    onClick={() => toggleModal({name: FORM_NAME, status: true})}
                     className="header-button">Add My Product</Button>
             <Link to="/cart">
               <Tooltip placement="left"
@@ -91,15 +74,14 @@ function AppHeader({
       />
       <Modal visible={modalOpened}
              title="Add new product"
-             onOk={() => submit('addProduct')}
+             onOk={() => submit(FORM_NAME)}
              okButtonProps={{disabled: !isValid}}
              confirmLoading={isSubmitting}
              cancelButtonProps={{disabled: isSubmitting}}
              onCancel={onModalCancel}>
-        <AddProductForm origins={origins}
+        <ProductForm origins={origins}
                         disabled={isSubmitting}
-                        name='addProduct'
-                        onSubmit={productFormData => onFormSubmit(productFormData)}/>
+                        name={FORM_NAME}/>
       </Modal>
     </Fragment>
  )
@@ -109,17 +91,30 @@ const mapStateToProps = state => ({
   selectCartItemsCount: selectCartItemsCount(state),
   cartTotalSum: selectCartTotalSum(state),
   origins: selectProductOrigins(state),
-  productFormData: getFormValues('addProduct')(state),
-  isSubmitting: isSubmitting('addProduct')(state),
-  isValid: isValid('addProduct')(state)
+  productFormData: getFormValues(FORM_NAME)(state),
+  isSubmitting: isSubmitting(FORM_NAME)(state),
+  isValid: isValid(FORM_NAME)(state)
 
 });
 
 const actions = {
   reset,
   submit,
+  toggleModal
 };
 
 const enhance = connect(mapStateToProps, actions);
+
+AppHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+  selectCartItemsCount: PropTypes.number,
+  cartTotalSum: PropTypes.number,
+  origins: PropTypes.array,
+  reset: PropTypes.func,
+  isSubmitting: PropTypes.bool,
+  isValid: PropTypes.bool,
+  submit: PropTypes.func,
+  toggleModal: PropTypes.func
+};
 
 export default enhance(AppHeader);

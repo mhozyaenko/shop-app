@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {WithInputRender} from "../hocs/WithInputRender";
 import {Input, Form} from "antd";
 
@@ -26,5 +27,16 @@ function FormInput(props) {
   </Form.Item>
   )
 }
+
+FormInput.propTypes = {
+  label: PropTypes.string,
+  placeholder: PropTypes.string,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  type: PropTypes.string,
+  meta: PropTypes.object,
+  disabled: PropTypes.bool
+};
 
 export default WithInputRender(FormInput)

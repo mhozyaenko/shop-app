@@ -1,9 +1,15 @@
-import {GET_ORIGINS_SUCCESS, GET_PRODUCTS_SUCCESS, SET_CHANGED_PRODUCT} from "./actionTypes";
+import {
+  ADD_PRODUCT,
+  GET_ORIGINS_SUCCESS,
+  GET_PRODUCTS_SUCCESS,
+  SET_CHANGED_PRODUCT
+} from "./actionTypes";
 
 const initialState = {
   byIds: {},
   idArray: [],
   origins: [],
+
 };
 
 export default function ProductsReducer(state = initialState, action) {
@@ -25,6 +31,16 @@ export default function ProductsReducer(state = initialState, action) {
         byIds: {...state.byIds,
           [action.data.id]: action.data}
       };
+    case ADD_PRODUCT:
+      return {
+        ...state,
+        byIds: {
+          ...state.byIds,
+          [action.data.id]: action.data
+        },
+        idArray: [...state.idArray, action.data.id]
+      };
+
     default:
       return state;
   }

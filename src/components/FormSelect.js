@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {WithInputRender} from "../hocs/WithInputRender";
 import {Select, Form} from "antd";
 
@@ -34,5 +35,15 @@ function FormSelect(props) {
     </Form.Item>
   )
 }
+
+FormSelect.propTypes = {
+  label: PropTypes.string,
+  options: PropTypes.array,
+  placeholder: PropTypes.string,
+  onChange: PropTypes.func,
+  meta: PropTypes.object,
+  disabled: PropTypes.bool,
+  value: PropTypes.string
+};
 
 export default WithInputRender(FormSelect)

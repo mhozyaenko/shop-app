@@ -14,7 +14,7 @@ export default function Page404() {
     <Typography style={{padding: 20}}>
       <Title>OOPS... This page does not exist</Title>
       <Text>
-        <Link to="/">
+        <Link to="/products">
           Go to HomePage
         </Link>
       </Text>

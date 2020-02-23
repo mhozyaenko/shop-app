@@ -1,4 +1,10 @@
-import {GET_ORIGINS_SUCCESS, GET_PRODUCTS_SUCCESS, SET_CHANGED_PRODUCT} from "./actionTypes";
+import {
+  ADD_PRODUCT,
+  FIRST_UPLOAD_INIT,
+  GET_ORIGINS_SUCCESS,
+  GET_PRODUCTS_SUCCESS,
+  SET_CHANGED_PRODUCT
+} from "./actionTypes";
 
 export const getProductsSuccess = data => ({
     type: GET_PRODUCTS_SUCCESS,
@@ -13,4 +19,13 @@ export const getOriginsSuccess = data => ({
 export const setChangedProduct = data => ({
   type: SET_CHANGED_PRODUCT,
   ...data
-})
+});
+
+export const firstLoadInit = () => ({
+  type: FIRST_UPLOAD_INIT
+});
+
+export const addProduct = data => ({
+  type: ADD_PRODUCT,
+  ...data
+});

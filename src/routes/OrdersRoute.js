@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import AppHeader from "../containers/AppHeader";
 import {Layout} from "antd";
 import OrdersList from "../containers/OrdersList";
+import {withRouter} from "react-router";
 
 const {Content} = Layout;
 
@@ -18,4 +19,4 @@ function OrdersRoute() {
   )
 }
 
-export default OrdersRoute;
+export default withRouter(OrdersRoute);

@@ -1,14 +1,15 @@
 import React, {Fragment} from 'react';
+import PropTypes from 'prop-types';
 import {Button, Checkbox, Slider} from 'antd';
 import {MAXPRICE, MINPRICE} from "../constants/filterOptions";
 import {getCheckboxOptions} from "../helpers";
 import {bindActionCreators} from "redux";
 import connect from "react-redux/es/connect/connect";
 import {resetOrigins, setOrigins, setPage, setPrices} from "../store/filters/action";
-import {selectOrigins, selectPrices, selectProductOrigins} from "../store/selectors";
+import {selectOrigins, selectPrices} from "../store/filters/selectors";
+import {selectProductOrigins} from "../store/products/selectors";
 
-function ProductsFilter({
-                          setOrigins,
+function ProductsFilter({ setOrigins,
                           resetOrigins,
                           origins,
                           setPrices,
@@ -16,21 +17,13 @@ function ProductsFilter({
                           setPage,
                           productOrigins
 }) {
-  /**
-   * handle changes of origins filter
-   * @param checkedValues
-   */
+
   const handleOriginsChange = (checkedValues) => {
     setOrigins({checkedValues});
-    setPage({page: 1});
   };
-  /**
-   * handle change of prices range
-   * @param value
-   */
+
   const handlePriceChange = (value) => {
     setPrices({value});
-    setPage({page: 1});
   };
 
   return (
@@ -53,8 +46,9 @@ function ProductsFilter({
           min={MINPRICE}
           max={MAXPRICE}
           step={10}
-          defaultValue={prices}
-          onAfterChange={handlePriceChange}
+          defaultValue={[Number(prices[0]), Number(prices[1])]}
+          value={[Number(prices[0]), Number(prices[1])]}
+          onChange={handlePriceChange}
         />
       </div>
     </Fragment>
@@ -77,5 +71,15 @@ const actions = {
 const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
 
 const enhance = connect(mapStateToProps, mapDispatchToProps);
+
+ProductsFilter.propTypes = {
+  setOrigins: PropTypes.func,
+  resetOrigins: PropTypes.func,
+  origins: PropTypes.array,
+  setPrices: PropTypes.func,
+  prices: PropTypes.array,
+  setPage: PropTypes.func,
+  productOrigins: PropTypes.array
+};
 
 export default enhance(ProductsFilter);
