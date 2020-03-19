@@ -1,28 +1,26 @@
 import React from 'react';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {Switch, Route} from 'react-router-dom';
 import './App.css';
 import Cart from "./containers/Cart";
 import Page404 from "./components/Page404";
 import ProductsListRoute from "./routes/ProductsListRoute";
 import ProductRoute from "./routes/ProductRoute";
-import useCartProductDetails from "./hooks/useCartProductDetails";
-import useOrigins from "./hooks/useOrigins";
 import OwnProductsListRoute from "./routes/OwnProductsListRoute";
-import useProductsList from "./hooks/useProductsList";
 import OrdersRoute from "./routes/OrdersRoute";
 import OrderDetailsRoute from "./routes/OrderDetailsRoute";
+import AppWrapper from "./containers/AppWrapper";
+import {Redirect} from "react-router";
 
 function App() {
 
-  useProductsList();
-  useOrigins();
-  useCartProductDetails();
-
   return (
-    <Router>
+    <AppWrapper>
       <Switch>
-        <Route path="/" exact>
-          <ProductsListRoute/>
+        <Route exact path="/">
+          <Redirect to="/products"/>
+        </Route>
+        <Route path="/products">
+        <ProductsListRoute />
         </Route>
         <Route path="/product/:productId" exact>
           <ProductRoute/>
@@ -30,7 +28,7 @@ function App() {
         <Route path="/cart" exact>
           <Cart/>
         </Route>
-        <Route path="/my-products" exact>
+        <Route path="/my-products">
           <OwnProductsListRoute/>
         </Route>
         <Route path="/orders" exact>
@@ -43,7 +41,7 @@ function App() {
           <Page404/>
         </Route>
       </Switch>
-    </Router>
+    </AppWrapper>
   );
 }
 

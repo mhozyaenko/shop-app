@@ -1,6 +1,8 @@
 import {
+  RESET_ALL_FILTERS,
   RESET_ORIGINS,
   SET_EDITABLE,
+  SET_FILTERS_FROM_OBJ,
   SET_NOT_EDITABLE,
   SET_ORIGINS,
   SET_PAGE,
@@ -44,4 +46,13 @@ export const setEditable = () => ({
 
 export const setNotEditable = () => ({
   type: SET_NOT_EDITABLE
-})
+});
+
+export const setFiltersFromObj = data => ({
+  type: SET_FILTERS_FROM_OBJ,
+  ...data
+});
+
+export const resetAllFilters = () => ({
+  type: RESET_ALL_FILTERS
+});

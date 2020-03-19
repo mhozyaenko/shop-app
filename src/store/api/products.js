@@ -1,10 +1,6 @@
-import {RESPONSE_STATUSES} from "../constants/httpResponses";
+import {RESPONSE_STATUSES} from "../../constants/httpResponses";
 import {createRequest} from "./base";
 
-/**
- * fetch products list
- * @returns {Promise<{dataObject, keys} | never>}
- */
 export const getProducts = (queryString, withAuth) => {
   return createRequest({
     config: () => ({
@@ -16,11 +12,6 @@ export const getProducts = (queryString, withAuth) => {
     .then(res => res.data)
 };
 
-/**
- * get product by id
- * @param id
- * @returns {Promise<Response | never>}
- */
 export const getProduct = id => {
   return createRequest({
     config: () => ({
@@ -31,9 +22,6 @@ export const getProduct = id => {
     .then(res => res.data)
 };
 
-/**
- * fetch products origins
- */
 export const getOrigins = () => {
   return createRequest({
     config: () => ({
@@ -44,11 +32,6 @@ export const getOrigins = () => {
     .then(res => res.data)
 };
 
-/**
- * Create product
- * @param data
- * @returns {Promise<boolean | never>}
- */
 export const postNewProduct = data => {
   const withAuth = true;
   return createRequest({
@@ -62,11 +45,6 @@ export const postNewProduct = data => {
     .then(response => response.status === RESPONSE_STATUSES.OK)
 };
 
-/**
- * Update product
- * @param data
- * @returns {Promise<boolean | never>}
- */
 export const postUpdateProduct = data => {
   const withAuth = true;
   return createRequest({

@@ -6,3 +6,5 @@ export const SET_PAGE = "SET_PAGE";
 export const SET_PAGE_ITEMS = "SET_PAGE_ITEMS";
 export const SET_EDITABLE = "SET_EDITABLE";
 export const SET_NOT_EDITABLE = "SET_NOT_EDITABLE";
+export const SET_FILTERS_FROM_OBJ = "SET_FILTERS_FROM_OBJ";
+export const RESET_ALL_FILTERS = "RESET_ALL_FILTERS";

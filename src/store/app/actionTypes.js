@@ -1,0 +1,3 @@
+export const FIRST_UPLOAD_INIT = "FIRST_UPLOAD_INIT";
+export const TOGGLE_LOADER = "TOGGLE_LOADER";
+export const TOGGLE_MODAL = "TOGGLE_MODAL";

@@ -1,34 +1,38 @@
 import React from 'react';
 import {useParams} from "react-router-dom";
+import PropTypes from 'prop-types';
 import {Spin} from "antd";
 import ProductItem from "../components/ProductItem";
 import connect from "react-redux/es/connect/connect";
-import {useProduct} from "../hooks/useProduct";
-import {addItemsToCart, incrementItemsCount} from "../store/cart/actions";
-import {bindActionCreators} from "redux";
+import {useInjectSaga} from "./AppWrapper";
+import fetchProductSaga from "../store/sagas/fetchProductSaga";
+import {useSelector} from "react-redux";
+import {selectProductById} from "../store/products/selectors";
+import {selectAppLoading} from "../store/app/selectors";
 
-function ProductDetails({incrementItemsCount, addItemsToCart}) {
+function ProductDetails({incrementItemsCount, addItemsToCart, isLoading}) {
   const {productId} = useParams();
-  const {product} = useProduct(productId);
+  useInjectSaga('fetchProduct', fetchProductSaga, productId);
 
-  const handleClick = (id, isInCart) => {
-    isInCart ? incrementItemsCount(id) : addItemsToCart(id);
-  };
+  const product = useSelector(selectProductById(productId));
 
   return (
-    !product ?
-      <Spin size="large" /> :
-    <ProductItem product={product} single click={handleClick} />
+    <Spin spinning={isLoading || !product } size="large">
+      {product && <ProductItem product={product} single/>}
+    </Spin>
   )
 }
 
-const actions = {
-  addItemsToCart,
-  incrementItemsCount
+const mapStateToProps = (state) => ({
+  isLoading: selectAppLoading(state),
+});
+
+const enhance = connect(mapStateToProps);
+
+ProductDetails.propTypes = {
+  incrementItemsCount: PropTypes.func,
+  addItemsToCart: PropTypes.func,
+  isLoading: PropTypes.bool
 };
-
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
-
-const enhance = connect(null, mapDispatchToProps);
 
 export default enhance(ProductDetails);

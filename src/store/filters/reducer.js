@@ -1,7 +1,9 @@
 import {MAXPRICE, MINPRICE} from "../../constants/filterOptions";
 import {
+  RESET_ALL_FILTERS,
   RESET_ORIGINS,
-  SET_EDITABLE, SET_NOT_EDITABLE,
+  SET_EDITABLE, SET_FILTERS_FROM_OBJ,
+  SET_NOT_EDITABLE,
   SET_ORIGINS,
   SET_PAGE,
   SET_PAGE_ITEMS,
@@ -63,6 +65,18 @@ export default function filtersReducer(state = initialState, action) {
     case SET_NOT_EDITABLE:
       return {
         ...state,
+        editable: false,
+      };
+    case SET_FILTERS_FROM_OBJ:
+      return Object.assign({...state}, action.data);
+    case RESET_ALL_FILTERS:
+      return {
+        origin: [],
+        minPrice: MINPRICE,
+        maxPrice: MAXPRICE,
+        page: null,
+        perPage: null,
+        totalItems: null,
         editable: false,
       };
     default:

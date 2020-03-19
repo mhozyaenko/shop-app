@@ -13,4 +13,4 @@ export const createRequest = ({config = () => ({}), withAuth = false}) => {
     reqConfig.headers.Authorization = process.env.REACT_APP_API_KEY
   }
   return httpRequestInstance.request(reqConfig);
-}
+};
